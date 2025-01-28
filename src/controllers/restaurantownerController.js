@@ -158,12 +158,21 @@ const updaterestaurantownerProfile = async (req, res, next) => {
 };
 
 
+const checkrestaurantowner = async (req, res, next) => {
+    try {
 
+        res.json({ success: true, message: "restaurantowner autherized" });
+    } catch (error) {
+        console.log(error);
+        res.status(error.statusCode || 500).json(error.message || 'Internal server error')
+    }
+};
 
 module.exports = {
     restaurantownerRegister,
     restaurantownerlogin,
     restaurantownerProfile,
     restaurantownerLogout,
-    updaterestaurantownerProfile
+    updaterestaurantownerProfile,
+    checkrestaurantowner
 };

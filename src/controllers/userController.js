@@ -123,11 +123,19 @@ const updateUserProfile = async (req, res, next) => {
 
 
 
+ const checkuser = async (req, res, next) => {
+    try {
+        return res.json({ message: "user autherized" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
   
 module.exports = {
     userRegister,
     userSignin,
     userProfile,
     userLogout,
-    updateUserProfile
+    updateUserProfile,
+    checkuser
 };

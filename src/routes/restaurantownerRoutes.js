@@ -1,5 +1,5 @@
 const express = require('express');
-const { restaurantownerRegister, restaurantownerlogin, restaurantownerProfile, restaurantownerLogout,updaterestaurantownerProfile} = require('../controllers/restaurantownerController');
+const { restaurantownerRegister, restaurantownerlogin, restaurantownerProfile, restaurantownerLogout,updaterestaurantownerProfile,checkrestaurantowner} = require('../controllers/restaurantownerController');
 const restaurantownerAuth = require("../middlewares/restaurantownerAuth.js");
 const jwt =require("jsonwebtoken")
 
@@ -20,5 +20,7 @@ restaurantownerRouter.get('/profile',  restaurantownerAuth, restaurantownerProfi
 
 //Updateprofile
 restaurantownerRouter.get('/updateprofile', restaurantownerAuth,updaterestaurantownerProfile );
+
+restaurantownerRouter.get('/checkrestaurantowner', restaurantownerAuth,checkrestaurantowner );
 
 module.exports = restaurantownerRouter;

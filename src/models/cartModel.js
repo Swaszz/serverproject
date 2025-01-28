@@ -3,16 +3,29 @@ const mongoose = require('mongoose')
 
 
 const cartSchema = new mongoose.Schema({
-    cartId:{type:String,required:true},
+    cartId:{type:String},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
-    MenuItemId: {type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem' },
-    quantity: { type: Number, default: 1 },
-    total_price: { type: number},
+    menuItem: [
+      {
+        menuItemId: {
+              type: mongoose.Schema.Types.ObjectId,ref: "MenuItem"},
+          price: {
+              type: Number,
+              required: true,
+          },
+          quantity: { type: Number, default: 1 }
+      },
+  ],
+   
+    total_price: { type: Number,default: 0},
     updatedAt: { type: Date, default: Date.now }
   });
-  const Cart = mongoose.model('Cart', cartSchema);
-
-
+  
+  
+  cartSchema.methods.calculateTotalPrice = function () {
+    this.total_price = this.menuItem.reduce((total, menuItem) => total + (menuItem.price * menuItem.quantity), 0);
+};
+const Cart = mongoose.model('Cart', cartSchema);
   module.exports = Cart;
   

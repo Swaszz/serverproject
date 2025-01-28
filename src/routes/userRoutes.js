@@ -1,5 +1,5 @@
 const express = require('express');
-const { userRegister, userSignin, userProfile, userLogout,updateUserProfile} = require('../controllers/userController');
+const { userRegister, userSignin, userProfile, userLogout,updateUserProfile,checkuser} = require('../controllers/userController');
 const userAuth = require("../middlewares/userAuth.js");
 const jwt =require("jsonwebtoken")
 
@@ -20,5 +20,6 @@ userRouter.get('/profile', userAuth, userProfile);
 //Updateprofile
 userRouter.get('/updateprofile', userAuth,updateUserProfile );
 
+userRouter.get("/checkuser", userAuth, checkuser);
 
 module.exports = userRouter;
