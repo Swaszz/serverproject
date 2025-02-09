@@ -7,6 +7,7 @@ const restaurantSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     menuItemId: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem' },
+    reviewId:{type: mongoose.Schema.Types.ObjectId, ref: 'Review'},
     createdAt: { type: Date, default: Date.now }
   });
   const Restaurant = mongoose.model('Restaurant', restaurantSchema);

@@ -1,5 +1,6 @@
 const MenuItem = require('../models/menuModel.js')
 const Restaurant = require('../models/restaurantModel.js')
+const Review = require('../models/reviewModel.js');
 const bcrypt = require('bcrypt')
 const jwt =require("jsonwebtoken")
 const tokenGenerator = require('../utils/token');
@@ -9,11 +10,11 @@ const cloudinaryInstance = require('../config/cloudinaryConfig.js');
 
 const createmenuItem = async (req,res,next)=>{
     try{
-        const { name, description,price,category, availability} = req.body;
+        const { name, description,price,category, availability , restaurantId} = req.body;
 
         let  cloudinaryResponse 
 
-        if( !name || !description || !price || !category || ! availability ){
+        if( !name || !description || !price || !category || ! availability || !restaurantId){
             return res.status(400).json({message:"All fields are required"})
         }
 
@@ -24,7 +25,7 @@ const createmenuItem = async (req,res,next)=>{
         }
       
         console.log("response ===" , cloudinaryResponse)
-           const menuitemData = new MenuItem ({name, description,price,category,image:cloudinaryResponse.url, availability});
+           const menuitemData = new MenuItem ({name, description,price,category,image:cloudinaryResponse.url, availability ,restaurantId});
           
             await menuitemData.save();
     
@@ -53,7 +54,14 @@ const getmenuItem = async (req,res,next)=>{
 const getmenuItemDetails = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const menuItemDetails = await MenuItem.findById(id).populate("restaurantId");
+        const menuItemDetails = await MenuItem.findById(id).populate("restaurantId").lean();
+
+       const reviews = await Review.find({ restaurantId: menuItemDetails.restaurantId?._id });
+
+        const totalRatings = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = reviews.length > 0 ? (totalRatings / reviews.length).toFixed(1) : "No rating yet";
+
+        menuItemDetails.restaurantRating = averageRating;
         console.log('Populated Single MenuItem:', menuItemDetails );
         return res.json({ data: menuItemDetails, message: "Menuitem Details  fetched " });
     } catch (error) {
@@ -104,27 +112,26 @@ const updatemenuItem = async (req, res, next) => {
 
 const getmenuItemcategory = async (req, res) => {
     try {
-        const { category } = req.body; 
-        if (!category) {
-            return res.status(400).json({ message: "Category is required" });
+
+        const category = await MenuItem.aggregate([
+            { $sort: { createdAt: -1 } },  
+            { $group: { _id: "$category", image: { $first: "$image" } } }
+        ]);
+
+        if (!category.length) {
+            return res.status(404).json({ message: "No categories found" });
         }
 
-      
-        const menuItems = await MenuItem.find({ category: { $regex: category, $options: "i" } });
+        res.status(200).json({ data: category, message: "Categories fetched successfully" });
 
-        if (menuItems.length === 0) {
-            return res.status(404).json({ message: "No menu items found for this category" });
-        }
-
-        res.status(200).json({
-            message: "Menu items fetched successfully",
-            data: menuItems,
-        });
     } catch (error) {
         console.error("Error fetching menu items by category:", error);
         res.status(500).json({ message: "Internal server error", error });
     }
 };
+
+
+
 
 const deletemenuItem = async (req, res, next) => {
     try {
@@ -141,6 +148,9 @@ const deletemenuItem = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+
+
+
 module.exports  = {
     createmenuItem,
     getmenuItem,

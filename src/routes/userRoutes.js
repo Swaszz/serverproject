@@ -1,15 +1,15 @@
 const express = require('express');
-const { userRegister, userSignin, userProfile, userLogout,updateUserProfile,checkuser} = require('../controllers/userController');
+const { userRegister, userLogin, userProfile, userLogout,updateUserProfile,checkuser} = require('../controllers/userController');
 const userAuth = require("../middlewares/userAuth.js");
 const jwt =require("jsonwebtoken")
 
 const userRouter = express.Router();
 
 //Register
-userRouter.post('/register', userRegister);
+userRouter.post('/signup', userRegister);
 
 //Signin
-userRouter.put('/signin', userSignin);
+userRouter.put('/login', userLogin);
 
 //Logout
 userRouter.get('/logout', userAuth, userLogout);

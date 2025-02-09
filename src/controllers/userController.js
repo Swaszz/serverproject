@@ -37,7 +37,7 @@ const userRegister = async (req,res,next)=>{
 
 
 
-const userSignin = async (req,res,next)=>{
+const userLogin= async (req,res,next)=>{
     try{
         const {  email, password} = req.body;
 
@@ -57,7 +57,7 @@ const userSignin = async (req,res,next)=>{
             }
     
             const token = tokenGenerator( UserExist._id);
-            res.cookie("token", token);
+            res.cookie("token", token );
     
             return res.json({ data:  UserExist, message: "user Signin success" });
         } catch (error) {
@@ -133,7 +133,7 @@ const updateUserProfile = async (req, res, next) => {
   
 module.exports = {
     userRegister,
-    userSignin,
+    userLogin,
     userProfile,
     userLogout,
     updateUserProfile,

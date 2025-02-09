@@ -19,6 +19,13 @@ mongoose.connect(`mongodb+srv://swathykrishna2227:${dbpassword}@cluster0.8vauz.m
 })
 app.use(cookieParser())
 app.use(express.json())
+app.use(
+  cors({
+      origin: "http://localhost:5173",
+      methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+      credentials: true,
+  })
+);
 app.use('/api',apiRouter)
 
 app.listen(3000, () => {

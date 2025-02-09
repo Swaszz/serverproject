@@ -16,7 +16,9 @@ const  Review = require ( "../models/reviewModel.js");
             return res.status(400).json({ message: "Please provide a proper rating" });
         }
 
-        const review = await Review.findOneAndUpdate({ userId, restaurantId }, { rating, comment }, { new: true, upsert: true });
+        const review = await Review.findOneAndUpdate({ userId, menuItemId }, 
+            { rating, comment, restaurantId }, 
+            { new: true, upsert: true });
 
         res.status(201).json({ data: review, message: "review added successfully" });
     } catch (error) {

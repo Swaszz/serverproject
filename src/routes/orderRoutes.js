@@ -1,5 +1,5 @@
 const express = require('express');
-const { getordersummary,placeorder,adddeliveryaddress,updateorderstatus,cancelorder} = require('../controllers/orderController.js');
+const { getordersummary,placeorder,updateorderstatus,cancelorder} = require('../controllers/orderController.js');
 const userAuth = require("../middlewares/userAuth.js");
 const restaurantownerAuth = require("../middlewares/restaurantownerAuth.js");
 const jwt =require("jsonwebtoken")
@@ -7,7 +7,6 @@ const jwt =require("jsonwebtoken")
 const orderRouter = express.Router();
 
 
-orderRouter.post('/delivery',userAuth, adddeliveryaddress);
 
 orderRouter.get('/getorder',userAuth, getordersummary);
 

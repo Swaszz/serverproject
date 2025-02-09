@@ -5,6 +5,7 @@ const menuitemRouter = require('./menuItemRoutes.js')
 const restaurantRouter = require('./restaurantRoutes.js')
 const cartRouter = require('./cartRoutes.js')
 const reviewRouter = require('./reviewRoutes.js')
+const deliveryRouter = require('./deliveryRoutes.js')
 const orderRouter = require('./orderRoutes.js')
 const apiRouter = express.Router()
 
@@ -19,6 +20,8 @@ apiRouter.use('/restaurant', restaurantRouter)
 apiRouter.use('/cart', cartRouter)
 
 apiRouter.use('/review', reviewRouter)
+
+apiRouter.use('/delivery', deliveryRouter)
 
 apiRouter.use('/order', orderRouter)
 

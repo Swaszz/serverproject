@@ -29,7 +29,7 @@ const orderSchema = new mongoose.Schema({
   totalItems: { type: Number},
   totalPrice: {type: Number},
   status: { type: String,enum: ['Pending', 'Confirmed', 'Delivered', 'Cancelled'], default: 'Pending' },
-  Delivery_address:{type : String},
+  deliveryAddress:{type: mongoose.Schema.Types.ObjectId,ref: ' DeliveryAddress'},
   createdAt: {type: Date,default: Date.now},
   updatedAt: {type: Date,default: Date.now},
   })

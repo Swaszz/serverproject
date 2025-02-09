@@ -1,72 +1,79 @@
 const Order = require('../models/orderModel.js')
 const MenuItem = require("../models/menuModel.js")
+const DeliveryAddress = require("../models/deliveryModel.js")
+const Restaurant = require("../models/restaurantModel.js")
 const Cart = require("../models/cartModel.js")
 const bcrypt = require('bcrypt')
 const jwt =require("jsonwebtoken")
 const tokenGenerator = require('../utils/token');
 
-
-
-const getordersummary= async (req, res) => {
+const getordersummary = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
             return res.status(400).json({ message: "User not authenticated" });
         }
-        const userId  = req.user.id;  
-        const cart = await Cart.findOne( {userId }).populate('menuItem.menuItemId');
-        if (!cart) {
-            return res.status(404).json({ message: "Cart not found." });
+
+        const userId = req.user.id;
+
+        
+        const order = await Order.findOne({ userId })
+            .sort({ createdAt: -1 })
+            .populate({ path: "menuItem.menuItemId", model: "MenuItem" })
+            .populate({ path: "restaurantId", model: "Restaurant" });
+
+        if (!order) {
+            return res.status(404).json({ message: "No orders found for this user" });
         }
-       
+
+        
+        const userAddress = await DeliveryAddress.findOne({ userId });
+
+        let deliveryAddress = null;
+        if (userAddress && userAddress.addresses.length > 0) {
+         
+            deliveryAddress = userAddress.addresses.find(addr => addr.isDefault) || userAddress.addresses[0];
+        }
+
+        
+        const totalPrice = order.menuItem.reduce((sum, item) => {
+            if (item.menuItemId && item.menuItemId.price) {
+                return sum + item.menuItemId.price * item.quantity;
+            }
+            return sum;
+        }, 0);
+
+      
         const orderSummary = {
-            menuItems: cart.menuItem,
-            totalPrice: cart.total_price,
-            coupon: cart.coupon, 
+            restaurant: order.restaurantId || null,
+            menuItems: order.menuItem || [],
+            totalPrice: totalPrice,
+            coupon: order.coupon || null,
+            deliveryAddress: deliveryAddress
         };
+
         res.status(200).json({ message: "Order Summary", data: orderSummary });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching order summary", error });
+        console.error("Error fetching order summary:", error);
+        res.status(500).json({ message: "Error fetching order summary", error: error.message });
     }
 };
-
-const adddeliveryaddress = async (req, res, next) => {
-    try {
-        if (!req.user || !req.user.id) {
-            return res.status(400).json({ message: "User not authenticated" });
-        }
-
-        const {  Delivery_address } = req.body;
-        if (! Delivery_address) {
-            return res.status(400).json({ message: "Address is required" });
-        }
-
-        const newAddress = await  Order.create({
-            userId: req.user.id,
-            Delivery_address,
-        })
-
-        res.status(201).json({ message: "Delivery address added successfully", data: newAddress });
-    } catch (error) {
-        res.status(500).json({ message: "Error adding delivery address", error });
-    }
-};
-
-
 const placeorder = async (req, res) => {
     try {
-        const { userId,  menuItem, Delivery_address } = req.body;
+        const { userId,  menuItem,deliveryAddress} = req.body;
 
         if (!userId ||  !menuItem ) {
             return res.status(400).json({ message: "Missing required fields" });
         }
-
+        let addressId = deliveryAddress;
        
         const newOrder = await Order.create({
             userId,
             menuItem: menuItem, 
-            Delivery_address,
+            deliveryAddress : addressId,
             status: "Pending",
         })
+
+        
 
         res.status(201).json({ message: "Order placed successfully", data: newOrder });
     } catch (error) {
@@ -128,7 +135,6 @@ const cancelorder = async (req, res) => {
 module.exports  = {
     
     getordersummary,
-    adddeliveryaddress,
     updateorderstatus,
     placeorder,
     cancelorder

@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose')
 
 
@@ -18,13 +17,13 @@ const cartSchema = new mongoose.Schema({
       },
   ],
    
-    total_price: { type: Number,default: 0},
+  totalAmount: { type: Number,default: 0},
     updatedAt: { type: Date, default: Date.now }
   });
   
   
   cartSchema.methods.calculateTotalPrice = function () {
-    this.total_price = this.menuItem.reduce((total, menuItem) => total + (menuItem.price * menuItem.quantity), 0);
+    this.totalAmount = this.menuItem.reduce((total, menuItem) => total + (menuItem.price * menuItem.quantity), 0);
 };
 const Cart = mongoose.model('Cart', cartSchema);
   module.exports = Cart;

@@ -1,5 +1,5 @@
 const express = require('express');
-const { addcart, getcart,  proceedToCheckout,updatemenuItemQuantity,emptycart,  deletecart} = require('../controllers/cartController.js');
+const { addcart, getcart,  getCartDetails, proceedToCheckout,updatemenuItemQuantity,emptycart,  deletecart} = require('../controllers/cartController.js');
 const userAuth = require("../middlewares/userAuth.js");
 const jwt =require("jsonwebtoken")
 
@@ -10,7 +10,9 @@ cartRouter.post('/addcart',userAuth, addcart);
 
 cartRouter.get('/getcart',userAuth, getcart);
 
-cartRouter.post('/checkout',userAuth,   proceedToCheckout);
+cartRouter.get("/", userAuth, getCartDetails); // ✅ Fetch cart details
+
+cartRouter.post("/checkout", userAuth, proceedToCheckout); // ✅ Proceed to checkout
 
 cartRouter.put('/updatequantity',userAuth, updatemenuItemQuantity);
 
