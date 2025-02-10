@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config("./.env")
 const express = require('express')
 const app = express()
+const BSON = require('bson');
 var cookieParser = require('cookie-parser')
 const cors = require('cors')
 const mongoose = require('mongoose');
