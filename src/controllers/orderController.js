@@ -3,7 +3,7 @@ const MenuItem = require("../models/menuModel.js")
 const DeliveryAddress = require("../models/deliveryModel.js")
 const Restaurant = require("../models/restaurantModel.js")
 const Cart = require("../models/cartModel.js")
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const jwt =require("jsonwebtoken")
 const tokenGenerator = require('../utils/token');
 

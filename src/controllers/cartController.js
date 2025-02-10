@@ -1,7 +1,7 @@
 const Cart = require('../models/cartModel.js')
 const MenuItem = require('../models/menuModel.js')
 const User = require('../models/userModel.js')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const jwt =require("jsonwebtoken")
 const tokenGenerator = require('../utils/token');
 const Restaurant = require('../models/restaurantModel.js');

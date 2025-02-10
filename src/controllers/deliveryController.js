@@ -1,6 +1,6 @@
 
 const DeliveryAddress = require('../models/deliveryModel.js')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const jwt =require("jsonwebtoken")
 const tokenGenerator = require('../utils/token');
 
