@@ -5,7 +5,7 @@ const app = express()
 var cookieParser = require('cookie-parser')
 const cors = require('cors')
 const mongoose = require('mongoose');
-mongoose.set('strictQuery', false); 
+
 const apiRouter = require('./src/routes');
 
 const dbpassword = process.env.DB_Password
